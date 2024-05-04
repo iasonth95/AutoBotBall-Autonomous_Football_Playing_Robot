@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <title>5LIA0: Embedded visual control</title>
+    <style>
+       td
+	{
+	 max-width: 100px;
+	 overflow-wrap:break-word;
+	}
+	table {width: 100%; table-layout: fixed;}
+	td
+	{
+	 max-width: 0;
+	 overflow: hidden;
+	 text-overflow: ellipsis;
+	 white-space: nowrap;
+	}
+	.column_a {width: 20%;}
+	.column_b {width: 20%;}
+	.column_c {width: 20%;}
+	.column_d {width: 40%;}
+
+        #div1 {
+                float:left; 
+                width:25%;
+                height:280px;
+            }
+            #div2{
+                float:left; 
+                width:50%;
+                height:280px;
+            }
+	#div3{
+                float:right;
+                width:25%;
+                height:280px;
+            }
+.container {
+  display: flex, flex-direction: row, align-items: center, justify-content: flex-end, writing-mode: vertical-lr width:100px, height:100px, border: solid red 1px;
+}
+
+.rotate {
+    transform: rotate(180deg); 
+    transform-origin: left top
+}
+        body{
+            color: black;
+            padding:1%;
+            text-align: center;
+        }
+        a:link, a:visited {
+          background-color: #f44336;
+          color: white;
+          padding: 14px 25px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        a:hover, a:active {
+          background-color: red;
+        }
+    </style>
+  </head>
+  <header>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  </header>
+  <body>
+    <h1>5LIA0: Embedded visual control</h1>
+    <div class='wrapper'>
+      <button class='get_result'>Refresh list</button>
+      <div class='result'>
+
+</div>
+    </div>
+ <script>
+    $(document).ready(function(){
+      $('.wrapper').on('click', '.get_result', function(){
+         var val1 = $("#input_A").val();
+         var val2 = $("#input_B").val();
+         $.ajax({
+          url: "/calculate_result",
+          type: "get",
+          data: {val1: val1, val2:val2},
+          success: function(response) {
+            $(".resultQueue").html(response.data2.toString());
+            $(".resultHistory").html(response.data4.toString());
+            $(".result").html(response.result.toString());
+          },
+         });
+      });
+    });
+ </script>
+    <hr>
+    <div id="wrapper">
+<div id="div1">
+            <h2>Control</h2>
+		<form id="some-form" method="POST">
+            		<h4>
+				<input type="submit" name="submit_forward" value="Forward">
+			</h4>
+		    	<h4>
+				<input type="submit" name="submit_forward" value="Left">
+
+	
+				<input type="submit" name="submit_forward" value="Right">
+
+		</h4><h4>
+				<input type="submit" name="submit_forward" value="Grab">
+
+		    	</h4>
+			<h4>
+				<input type="submit" name="submit_forward" value="Slide">
+
+		    	</h4>
+			<h4>
+				<input type="submit" name="submit_forward" value="Sens 1 cur">
+				<input type="submit" name="submit_forward" value="Sens 1 vol">
+				<input type="submit" name="submit_forward" value="Sens 1 pwr">
+			</h4>
+			<h4>
+				<input type="submit" name="submit_forward" value="Sens 2 cur">
+				<input type="submit" name="submit_forward" value="Sens 2 vol">
+				<input type="submit" name="submit_forward" value="Sens 2 pwr">
+			</h4>
+				<h4><input type="text" style="width: 100px;" name="stopDistance" value="0" ></h4>
+            	</form>
+
+		</div>
+		<div id="div2">
+            <h2>History</h2>
+
+            
+		    <div class="resultHistory" style="height:180px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+                <table >
+  <colgroup>
+    <col class="column_a" />
+    <col class="column_b" />
+    <col class="column_c" />
+    <col class="column_d" />
+  </colgroup>
+			<tr>
+				<th align="left">Time</th>
+				<th align="left">From</th>
+				<th align="left">Type</th>
+				<th align="left">Content</th>
+			</tr>
+                    {% for item in data|reverse %}
+			<tr>
+                        <td >{{item.time}}</td>
+			<td >{{item.from}}</td>
+                        <td >{{item.type}}</td>
+			<td >{{item.content}}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+		</div>
+       	</div>
+
+
+		<div id="div3">
+            <h2>Queue</h2>
+
+            
+		    <div class="resultQueue" style="height:180px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+                <ul style="list-style-type:none" >
+                    {% for item in data2 %}
+                        <li>{{item.name}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+		</div>
+	</div>
+	<br><br>
+	<hr
+        <h3><img src="{{ url_for('video_feed') }}" width="35%"></h3>
+	
+
+	
+  </body>
+</html>
